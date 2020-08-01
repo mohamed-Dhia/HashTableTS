@@ -10,10 +10,10 @@
 
 ## _what did I use_
 
-* ### [**TypeScript**](https://github.com/microsoft/TypeScript)
+* ### [**TypeScript**](https://github.com/microsoft/TypeScript) 🥰
 
-* ### [**jest**](https://github.com/facebook/jest)
+* ### [**jest**](https://github.com/facebook/jest) 🧪
 
-* ### [**eslint**](https://github.com/eslint/eslint) with [**prettier**](https://github.com/prettier/prettier) to enforce some rules
+* ### [**eslint**](https://github.com/eslint/eslint) 🔍 with [**prettier**](https://github.com/prettier/prettier) 🎀 to enforce some rules 😤 🏫
 
-* ### [**yarn**](https://github.com/yarnpkg/yarn) my preffered package manager
+* ### [**yarn**](https://github.com/yarnpkg/yarn) 🐾 my preffered package manager
