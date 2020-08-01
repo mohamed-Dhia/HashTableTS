@@ -1,7 +1,7 @@
 export default class HashTable {
     private _size: number;
     private _numberOfElement: number;
-    private _storage: ([string, any] | [])[][];
+    private _storage: [string, any][][];
     constructor(_size: number) {
         this._size = _size;
         this._numberOfElement = 0;
@@ -28,8 +28,8 @@ export default class HashTable {
 
     public setItem = <T>(key: string, value: T, resize = true): void => {
         const index = this.hashStringToInt(key);
-        const newbucket: ([string, T] | [])[] = [
-            ...this._storage[index].filter((tuple: [string, T] | []): boolean => tuple[0] !== key),
+        const newbucket: [string, T][] = [
+            ...this._storage[index].filter((tuple: [string, T]): boolean => tuple[0] !== key),
             [key, value],
         ];
         newbucket.length > this._storage[index].length && this._numberOfElement++;
@@ -46,7 +46,7 @@ export default class HashTable {
 
     public removeItem = <T>(key: string): void => {
         const index = this.hashStringToInt(key);
-        const newBucket = this._storage[index].filter((tuple: [string, T] | []): boolean => tuple[0] !== key);
+        const newBucket = this._storage[index].filter((tuple: [string, T]): boolean => tuple[0] !== key);
         newBucket.length - this._storage[index].length && (this._storage[index] = newBucket) && this._numberOfElement--;
     };
 
@@ -59,14 +59,14 @@ export default class HashTable {
         this._numberOfElement = 0;
         this._storage = this.createEmptyStorage();
         allItems.forEach((tuple: [string, T]): void => {
-            this.setItem(tuple[0], tuple[1], false);
+            this.setItem(...tuple, false);
         });
     };
 
     public each = <T>(cb: (tuple: [string, T]) => void): void => {
-        this._storage.forEach((bucket: ([string, T] | [])[]) => {
-            bucket.forEach((tuple: [string, T] | []) => {
-                tuple.length && cb(tuple);
+        this._storage.forEach((bucket: [string, T][]) => {
+            bucket.forEach((tuple: [string, T]) => {
+                cb(tuple);
             });
         });
     };
