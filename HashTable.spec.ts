@@ -5,7 +5,6 @@ describe('HashTable', () => {
     beforeEach(() => {
         hash = new HashTable(8);
     });
-
     it('should have size and numberOfElements property', () => {
         expect(hash).toHaveProperty('_size');
         expect(hash).toHaveProperty('_numberOfElement');
