@@ -7,9 +7,11 @@ export default class HashTable {
         this._numberOfElement = 0;
         this._storage = this.createEmptyStorage();
     }
+
     get size(): number {
         return this._size;
     }
+
     get numberOfElement(): number {
         return this._numberOfElement;
     }
