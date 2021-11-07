@@ -1,13 +1,13 @@
 import HashTable from './HashTable';
 
 describe('HashTable', () => {
-    let hash: HashTable;
+    let hash: HashTable<string>;
     beforeEach(() => {
         hash = new HashTable(8);
     });
 
     it('should have size and numberOfElements property', () => {
-        expect(hash).toHaveProperty('_size');
+        expect(hash).toHaveProperty('size');
         expect(hash).toHaveProperty('_numberOfElement');
     });
 
@@ -100,8 +100,8 @@ describe('HashTable', () => {
         hash.setItem('hi', 'jhon');
         hash.setItem('ho', 'doe');
         hash.setItem('yo', 'jhonny');
-        const arr: ([string, unknown] | [])[] = [];
-        hash.each(<T>(tuple: [string, T] | []): void => {
+        const arr: [string, string][] = [];
+        hash.each((tuple) => {
             arr.push(tuple);
         });
 

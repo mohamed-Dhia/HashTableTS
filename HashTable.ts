@@ -1,75 +1,76 @@
-export default class HashTable {
-    private _size: number;
+export default class HashTable<T> {
     private _numberOfElement: number;
-    private _storage: [string, any][][];
-    constructor(_size: number) {
-        this._size = _size;
+    private storage: [string, T][][];
+    constructor(private _size: number) {
         this._numberOfElement = 0;
-        this._storage = this.createEmptyStorage();
+        this.storage = this.createEmptyStorage();
     }
 
-    get size(): number {
+    get size() {
         return this._size;
     }
 
-    get numberOfElement(): number {
+    get numberOfElement() {
         return this._numberOfElement;
     }
 
-    private createEmptyStorage = (): [][] => {
-        return Array.from({ length: this._size }, () => []);
-    };
+    private createEmptyStorage() {
+        return Array.from<[string, T][]>({ length: this._size });
+    }
 
-    private hashStringToInt = (key: string): number => {
+    private hashStringToInt(key: string): number {
         let hash = 37;
         for (let i = 0; i < key.length; i++) {
             hash = 19 * hash * key.charCodeAt(i);
         }
         return hash % this._size;
-    };
+    }
 
-    public setItem = <T>(key: string, value: T, resize = true): void => {
+    setItem(key: string, value: T, resize = true): void {
         const index = this.hashStringToInt(key);
-        const newbucket: [string, T][] = [
-            ...this._storage[index].filter((tuple: [string, T]): boolean => tuple[0] !== key),
-            [key, value],
-        ];
-        newbucket.length > this._storage[index].length && this._numberOfElement++;
-        this._storage[index] = newbucket;
-        resize &&
-            ((this._numberOfElement >= (this._size * 3) / 4 && this.resize(this._size * 2)) ||
-                (this.numberOfElement <= this._size / 4 && this.resize(this._size / 2)));
-    };
+        this.storage[index] = this.storage[index] || [];
+        const newbucket: [string, T][] = [...this.storage[index].filter((tuple) => tuple[0] !== key), [key, value]];
+        newbucket.length > this.storage[index].length && this._numberOfElement++;
+        this.storage[index] = newbucket;
+        if (resize) {
+            if (this._numberOfElement >= (this._size * 3) / 4) {
+                this.resize(this._size * 2);
+            } else if (this._numberOfElement <= this._size / 4) {
+                this.resize(this._size / 2);
+            }
+        }
+    }
 
-    public getItem = <T>(key: string): T | null => {
+    getItem(key: string) {
         const index = this.hashStringToInt(key);
-        return this._storage[index].find((tuple: [string, T] | []): boolean => tuple[0] === key)?.[1] || null;
-    };
+        return this.storage[index]?.find((tuple) => tuple[0] === key)?.[1] ?? null;
+    }
 
-    public removeItem = <T>(key: string): void => {
+    removeItem(key: string): void {
         const index = this.hashStringToInt(key);
-        const newBucket = this._storage[index].filter((tuple: [string, T]): boolean => tuple[0] !== key);
-        newBucket.length - this._storage[index].length && (this._storage[index] = newBucket) && this._numberOfElement--;
-    };
+        const newBucket = this.storage[index].filter((tuple) => tuple[0] !== key);
+        newBucket.length - this.storage[index].length && (this.storage[index] = newBucket) && this._numberOfElement--;
+    }
 
-    private resize = <T>(newSize: number): void => {
+    resize(newSize: number): void {
         const allItems: [string, T][] = [];
-        this.each((tuple: [string, T]): void => {
+        this.each((tuple) => {
             allItems.push(tuple);
         });
         this._size = newSize;
         this._numberOfElement = 0;
-        this._storage = this.createEmptyStorage();
-        allItems.forEach((tuple: [string, T]): void => {
+        this.storage = this.createEmptyStorage();
+        allItems.forEach((tuple) => {
             this.setItem(...tuple, false);
         });
-    };
+    }
 
-    public each = <T>(cb: (tuple: [string, T]) => void): void => {
-        this._storage.forEach((bucket: [string, T][]) => {
-            bucket.forEach((tuple: [string, T]) => {
+    each(cb: (tuple: [string, T]) => void): void {
+        this.storage.forEach((bucket) => {
+            bucket = bucket || [];
+            bucket.forEach((tuple) => {
                 cb(tuple);
             });
         });
-    };
+    }
 }
