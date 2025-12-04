@@ -19,6 +19,7 @@ jobs:
         id: pragent
         uses: Codium-ai/pr-agent@main
         env:
+          ANTHROPIC_API_URL: ${{ secrets.ANTHROPIC_API_URL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           config.model: claude-sonnet-4-5
