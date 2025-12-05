@@ -26,10 +26,10 @@ export default class HashTable<T> {
         return hash % this._size;
     }
 
-    setItem(key: string, value: T, resize = true): void {
+    setItem(key: string, value: T, resize = true) {
         const index = this.hashStringToInt(key);
         this.storage[index] = this.storage[index] || [];
-        const newbucket: [string, T][] = [...this.storage[index].filter((tuple) => tuple[0] !== key), [key, value]];
+        const newbucket: [string, T][] = [...this.storage[index].filter(([tableKey]) => tableKey !== key), [key, value]];
         newbucket.length > this.storage[index].length && this._numberOfElement++;
         this.storage[index] = newbucket;
         if (resize) {
@@ -46,13 +46,13 @@ export default class HashTable<T> {
         return this.storage[index]?.find((tuple) => tuple[0] === key)?.[1] ?? null;
     }
 
-    removeItem(key: string): void {
+    removeItem(key: string) {
         const index = this.hashStringToInt(key);
         const newBucket = this.storage[index].filter((tuple) => tuple[0] !== key);
         newBucket.length - this.storage[index].length && (this.storage[index] = newBucket) && this._numberOfElement--;
     }
 
-    resize(newSize: number): void {
+    resize(newSize: number) {
         const allItems: [string, T][] = [];
         this.each((tuple) => {
             allItems.push(tuple);
@@ -65,12 +65,26 @@ export default class HashTable<T> {
         });
     }
 
-    each(cb: (tuple: [string, T]) => void): void {
+    each(cb: (tuple: [string, T]) => void) {
         this.storage.forEach((bucket) => {
             bucket = bucket || [];
             bucket.forEach((tuple) => {
                 cb(tuple);
             });
         });
+    }
+
+    *eachGenerator(cb: (tuple: [string, T]) => unknown) {
+        let i = 0
+        while (i < this.storage.length) {
+            const bucket = this.storage[i] || []
+            let j = 0
+            while (j < bucket.length) {
+                const tuple = bucket[j]
+                yield cb(tuple)
+                j++
+            }
+            i++
+        }
     }
 }
